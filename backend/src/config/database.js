@@ -13,23 +13,41 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
 });
 
-// Crear tabla usuarios si no existe
-db.run(`
-    CREATE TABLE IF NOT EXISTS usuarios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT,
-        email TEXT
-    )
-`);
+// Ejecutar las creaciones en orden (importante para evitar errores)
+db.serialize(() => {
 
-// Crear tabla productos si no existe
-db.run(`
-    CREATE TABLE IF NOT EXISTS productos (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT,
-        precio REAL,
-        stock INTEGER
-    )
-`);
+    // Crear tabla usuarios si no existe
+    db.run(`
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT,
+            email TEXT
+        )
+    `);
 
+    // Crear tabla productos si no existe
+    db.run(`
+        CREATE TABLE IF NOT EXISTS productos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT,
+            precio REAL,
+            stock INTEGER
+        )
+    `);
+
+    // Crear tabla pedidos (relaciona usuarios y productos)
+    db.run(`
+        CREATE TABLE IF NOT EXISTS pedidos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER,
+            producto_id INTEGER,
+            cantidad INTEGER,
+            FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+            FOREIGN KEY (producto_id) REFERENCES productos(id)
+        )
+    `);
+
+});
+
+// Exportar la conexión
 module.exports = db;
