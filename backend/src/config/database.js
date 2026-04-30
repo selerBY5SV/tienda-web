@@ -22,4 +22,14 @@ db.run(`
     )
 `);
 
+// Crear tabla productos si no existe
+db.run(`
+    CREATE TABLE IF NOT EXISTS productos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre TEXT,
+        precio REAL,
+        stock INTEGER
+    )
+`);
+
 module.exports = db;
