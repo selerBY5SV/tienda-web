@@ -78,14 +78,23 @@ function guardarPedido() {
     const url = pedidoEditando ? `${API_PEDIDOS}/${pedidoEditando}` : API_PEDIDOS;
 
     fetch(url, {
-        method: metodo,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ usuario_id, producto_id, cantidad })
-    })
-    .then(() => {
-        limpiarFormulario();
-        cargarPedidos();
-    });
+    method: metodo,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ usuario_id, producto_id, cantidad })
+})
+.then(res => res.json().then(data => ({ status: res.status, body: data })))
+.then(result => {
+    if (result.status !== 201 && result.status !== 200) {
+        alert(result.body.error);
+        return;
+    }
+
+    limpiarFormulario();
+    cargarPedidos();
+})
+.catch(() => {
+    alert('Error al crear pedido');
+});
 }
 
 // Editar pedido

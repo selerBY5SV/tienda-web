@@ -18,7 +18,7 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
     pedidosService.createPedido(req.body, (err, pedidoCreado) => {
         if (err) {
-            return res.status(500).json({ error: 'Error al crear pedido' });
+            return res.status(400).json({ error: err.message });
         }
 
         res.status(201).json(pedidoCreado);
