@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('./config/database');
 
 const usuariosRoutes = require('./routes/usuarios.routes');
@@ -13,9 +14,10 @@ app.use(express.json());
 
 app.use('/usuarios', usuariosRoutes);
 app.use('/productos', productosRoutes);
+app.use('/frontend', express.static(path.join(__dirname, '../../frontend')));
 
 app.get('/', (req, res) => {
-    res.send('API funcionando correctamente');
+    res.redirect('/frontend/index.html');
 });
 
 app.listen(PORT, () => {
