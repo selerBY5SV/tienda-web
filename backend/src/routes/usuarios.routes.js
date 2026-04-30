@@ -1,24 +1,49 @@
 const express = require('express');
 const router = express.Router();
+const usuariosService = require('../services/usuarios.service');
 
 // GET todos los usuarios
 router.get('/', (req, res) => {
-    res.json({ mensaje: 'Listado de usuarios' });
+    usuariosService.getUsuarios((err, usuarios) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error al obtener usuarios' });
+        }
+
+        res.json(usuarios);
+    });
 });
 
 // POST crear usuario
 router.post('/', (req, res) => {
-    res.json({ mensaje: 'Usuario creado' });
+    usuariosService.createUsuario(req.body, (err, usuarioCreado) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error al crear usuario' });
+        }
+
+        res.status(201).json(usuarioCreado);
+    });
 });
 
 // PUT actualizar usuario
 router.put('/:id', (req, res) => {
-    res.json({ mensaje: `Usuario ${req.params.id} actualizado` });
+    usuariosService.updateUsuario(req.params.id, req.body, (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error al actualizar usuario' });
+        }
+
+        res.json({ mensaje: 'Usuario actualizado correctamente' });
+    });
 });
 
 // DELETE eliminar usuario
 router.delete('/:id', (req, res) => {
-    res.json({ mensaje: `Usuario ${req.params.id} eliminado` });
+    usuariosService.deleteUsuario(req.params.id, (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error al eliminar usuario' });
+        }
+
+        res.json({ mensaje: 'Usuario eliminado correctamente' });
+    });
 });
 
 module.exports = router;
